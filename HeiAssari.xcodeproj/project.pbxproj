@@ -79,10 +79,7 @@
 			children = (
 				594CFF711DB523D800C5DF43 /* AppDelegate.swift */,
 				594CFF731DB523D800C5DF43 /* ViewController.swift */,
-				594CFF751DB523D800C5DF43 /* Main.storyboard */,
-				594CFF781DB523D800C5DF43 /* Assets.xcassets */,
-				594CFF7A1DB523D800C5DF43 /* LaunchScreen.storyboard */,
-				594CFF7D1DB523D800C5DF43 /* Info.plist */,
+				594CFF911DB523ED00C5DF43 /* Supporting Files */,
 			);
 			path = HeiAssari;
 			sourceTree = "<group>";
@@ -94,6 +91,17 @@
 				594CFF881DB523D800C5DF43 /* Info.plist */,
 			);
 			path = HeiAssariTests;
+			sourceTree = "<group>";
+		};
+		594CFF911DB523ED00C5DF43 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				594CFF751DB523D800C5DF43 /* Main.storyboard */,
+				594CFF781DB523D800C5DF43 /* Assets.xcassets */,
+				594CFF7A1DB523D800C5DF43 /* LaunchScreen.storyboard */,
+				594CFF7D1DB523D800C5DF43 /* Info.plist */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
