@@ -13,6 +13,8 @@
 		594CFF791DB523D800C5DF43 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 594CFF781DB523D800C5DF43 /* Assets.xcassets */; };
 		594CFF7C1DB523D800C5DF43 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 594CFF7A1DB523D800C5DF43 /* LaunchScreen.storyboard */; };
 		594CFF871DB523D800C5DF43 /* HeiAssariTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594CFF861DB523D800C5DF43 /* HeiAssariTests.swift */; };
+		79E0410E1B14154697E507AA /* Pods_HeiAssariTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37AC057C7D3C753FF5ABE225 /* Pods_HeiAssariTests.framework */; };
+		9D502385CC020267DF8A18E6 /* Pods_HeiAssari.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9353A36BF9FBA1653C6BF08 /* Pods_HeiAssari.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,6 +28,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		30718B525553E1253B3943FC /* Pods-HeiAssari.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeiAssari.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HeiAssari/Pods-HeiAssari.debug.xcconfig"; sourceTree = "<group>"; };
+		37AC057C7D3C753FF5ABE225 /* Pods_HeiAssariTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HeiAssariTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		594CFF6E1DB523D800C5DF43 /* HeiAssari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeiAssari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		594CFF711DB523D800C5DF43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		594CFF731DB523D800C5DF43 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -36,6 +40,10 @@
 		594CFF821DB523D800C5DF43 /* HeiAssariTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HeiAssariTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		594CFF861DB523D800C5DF43 /* HeiAssariTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeiAssariTests.swift; sourceTree = "<group>"; };
 		594CFF881DB523D800C5DF43 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		826F045E00C06D6CCA1D8D74 /* Pods-HeiAssari.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeiAssari.release.xcconfig"; path = "Pods/Target Support Files/Pods-HeiAssari/Pods-HeiAssari.release.xcconfig"; sourceTree = "<group>"; };
+		9A7B52DBB1FA3CAF81C92BC7 /* Pods-HeiAssariTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeiAssariTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-HeiAssariTests/Pods-HeiAssariTests.release.xcconfig"; sourceTree = "<group>"; };
+		A9353A36BF9FBA1653C6BF08 /* Pods_HeiAssari.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HeiAssari.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F91DEDE055A93A82AF90741D /* Pods-HeiAssariTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeiAssariTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HeiAssariTests/Pods-HeiAssariTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D502385CC020267DF8A18E6 /* Pods_HeiAssari.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,6 +59,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79E0410E1B14154697E507AA /* Pods_HeiAssariTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +72,8 @@
 				594CFF701DB523D800C5DF43 /* HeiAssari */,
 				594CFF851DB523D800C5DF43 /* HeiAssariTests */,
 				594CFF6F1DB523D800C5DF43 /* Products */,
+				E32CAE38746E5488BD60B4DB /* Pods */,
+				7F27321B36FDDCF674D86743 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -104,6 +116,26 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		7F27321B36FDDCF674D86743 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A9353A36BF9FBA1653C6BF08 /* Pods_HeiAssari.framework */,
+				37AC057C7D3C753FF5ABE225 /* Pods_HeiAssariTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E32CAE38746E5488BD60B4DB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				30718B525553E1253B3943FC /* Pods-HeiAssari.debug.xcconfig */,
+				826F045E00C06D6CCA1D8D74 /* Pods-HeiAssari.release.xcconfig */,
+				F91DEDE055A93A82AF90741D /* Pods-HeiAssariTests.debug.xcconfig */,
+				9A7B52DBB1FA3CAF81C92BC7 /* Pods-HeiAssariTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -111,9 +143,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 594CFF8B1DB523D800C5DF43 /* Build configuration list for PBXNativeTarget "HeiAssari" */;
 			buildPhases = (
+				B9141DC81F1B2531135272B2 /* [CP] Check Pods Manifest.lock */,
 				594CFF6A1DB523D800C5DF43 /* Sources */,
 				594CFF6B1DB523D800C5DF43 /* Frameworks */,
 				594CFF6C1DB523D800C5DF43 /* Resources */,
+				24CB9B20DE8191254EAD6633 /* [CP] Embed Pods Frameworks */,
+				65E618D57754185376FE1203 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -128,9 +163,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 594CFF8E1DB523D800C5DF43 /* Build configuration list for PBXNativeTarget "HeiAssariTests" */;
 			buildPhases = (
+				CF1C4A92EEC709963566419E /* [CP] Check Pods Manifest.lock */,
 				594CFF7E1DB523D800C5DF43 /* Sources */,
 				594CFF7F1DB523D800C5DF43 /* Frameworks */,
 				594CFF801DB523D800C5DF43 /* Resources */,
+				ACA3A729719F3626F7CDAAFF /* [CP] Embed Pods Frameworks */,
+				92914EA659FE67193455A02F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -203,6 +241,99 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		24CB9B20DE8191254EAD6633 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HeiAssari/Pods-HeiAssari-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		65E618D57754185376FE1203 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HeiAssari/Pods-HeiAssari-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		92914EA659FE67193455A02F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HeiAssariTests/Pods-HeiAssariTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		ACA3A729719F3626F7CDAAFF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-HeiAssariTests/Pods-HeiAssariTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B9141DC81F1B2531135272B2 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CF1C4A92EEC709963566419E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		594CFF6A1DB523D800C5DF43 /* Sources */ = {
@@ -347,6 +478,7 @@
 		};
 		594CFF8C1DB523D800C5DF43 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 30718B525553E1253B3943FC /* Pods-HeiAssari.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = ES4B789T7A;
@@ -360,6 +492,7 @@
 		};
 		594CFF8D1DB523D800C5DF43 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 826F045E00C06D6CCA1D8D74 /* Pods-HeiAssari.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = ES4B789T7A;
@@ -373,6 +506,7 @@
 		};
 		594CFF8F1DB523D800C5DF43 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F91DEDE055A93A82AF90741D /* Pods-HeiAssariTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -388,6 +522,7 @@
 		};
 		594CFF901DB523D800C5DF43 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A7B52DBB1FA3CAF81C92BC7 /* Pods-HeiAssariTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -420,6 +555,7 @@
 				594CFF8D1DB523D800C5DF43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		594CFF8E1DB523D800C5DF43 /* Build configuration list for PBXNativeTarget "HeiAssariTests" */ = {
 			isa = XCConfigurationList;
@@ -428,6 +564,7 @@
 				594CFF901DB523D800C5DF43 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
