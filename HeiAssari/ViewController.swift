@@ -44,6 +44,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
     }
     
     func parseManagePage() {
+        webView.reload()
         let url = webView.url!.absoluteString
         print(">>> parseManagePage() @ \(url)")
 //        Alamofire.request(url).responseString { response in
@@ -182,7 +183,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
 //        print(html)
         
         if let doc = Kanna.HTML(html: html, encoding: String.Encoding.utf8) {
-            for student in doc.css("table#queue tbody") {
+            for student in doc.css("table#queue tbody tr") {
                 let studentString = student.text!.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
                 let seperatedString = studentString.components(separatedBy: "\n").map{
                     $0.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
