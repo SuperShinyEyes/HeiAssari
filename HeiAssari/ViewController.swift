@@ -22,7 +22,7 @@ struct Constants {
     static let greenGoblinURLprefix = "https://greengoblin.cs.hut.fi/neuvontajono/sessions/"
     static let greenGoblinURLsuffix = "/manage"
     
-    static let defaultLabelText = "☝🏼Instruction \nGo to your course. \n🖱Click: \n1.Menu \n2.Neuvontajono \n3.Jonon hallinta \n4.YOUR GROUP"
+    static let defaultLabelText = "☝🏼Instruction \nGo to your course. \n🖱Click: \n1.Menu(🍔) at top right \n2.Neuvontajono \n3.Jonon hallinta \n4.YOUR GROUP"
     static let isOnManagePageLabelText = "Now we will notify you when a student joins the queue. You may press home button or lock your iPhone. \n\nYour iPhone might get little warm because it's playing silent mp3 so it doesn't get suspended by the OS."
 }
 
