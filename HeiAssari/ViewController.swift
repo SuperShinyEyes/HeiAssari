@@ -12,6 +12,7 @@ import WebKit
 import Kanna
 import Alamofire
 import AVFoundation
+import UserNotifications
 
 struct Constants {
     static let aPlusURL = "https://plus.cs.hut.fi/a1141/2016/"
@@ -22,7 +23,7 @@ struct Constants {
     static let greenGoblinURLsuffix = "/manage"
 }
 
-class ViewController: UIViewController, WKNavigationDelegate {
+class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     
     var webView: WKWebView!
     var label: UILabel!
@@ -105,6 +106,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
         let frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.8))
         webView = WKWebView(frame: frame)
         webView.navigationDelegate = self
+        webView.uiDelegate = self
         view.addSubview(webView)
     }
     
@@ -132,7 +134,9 @@ class ViewController: UIViewController, WKNavigationDelegate {
         print(">>> finish loading")
         
         
-        isOnManagePage = webView.url!.absoluteString.hasPrefix(Constants.greenGoblinURLprefix) && webView.url!.absoluteString.hasSuffix(Constants.greenGoblinURLsuffix)
+        let isURLPrefixManagePagePrefix = webView.url!.absoluteString.hasPrefix(Constants.greenGoblinURLprefix)
+        let isURLSuffixManagePagePrefix = webView.url!.absoluteString.hasSuffix(Constants.greenGoblinURLsuffix)
+        isOnManagePage = isURLPrefixManagePagePrefix && isURLSuffixManagePagePrefix
         
         // FIXME: Parse HTML by tags
         /**
@@ -147,25 +151,17 @@ class ViewController: UIViewController, WKNavigationDelegate {
          
          */
 
+    }
+    
+    func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
+        
+        print(">>> createWebViewWith configuration")
 
-        webView.evaluateJavaScript("document.documentElement.outerHTML") {
-            (html: Any?, error: Error?) in
-            if let doc = html as? String {
-                if doc.contains(Constants.aPlusLogInURLPath) {
-                    print(">>> Should log in")
-                    self.vibratePhone()
-                } else {
-                    print(">>> logged in")
-                    if let url = webView.url {
-                        print("    >>> logged in @ \(url.absoluteString)")
-                        if url.absoluteString == Constants.aPlusURL {
-                            webView.load(URLRequest(url: URL(string: "https://plus.cs.hut.fi/a1141/2016/lti-login/78/")!))
-                        }
-                    }
-                    
-                }
-            }
-        }
+        guard navigationAction.targetFrame == nil else { return nil }
+        
+        webView.load(navigationAction.request)
+        
+        return nil
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -208,7 +204,7 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     func isNotStudentInQueue(name: String, time: String) -> Bool {
         let studentsWithSameName = students.filter { $0.name == name }
-        guard let student = studentsWithSameName.first else {
+        guard let _ = studentsWithSameName.first else {
             return true  // Because we don't want to add it to the queue
         }
         return studentsWithSameName.filter { existing in
@@ -218,11 +214,29 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     func pushStudentToQueue(name: String, time:String, seat: String) {
         print(">>> pushStudentToQueue()")
-        students.append(Student(name: name, time: time, seat: seat))
+        let student = Student(name: name, time: time, seat: seat)
+        students.append(student)
         vibratePhone()
+        scheduleNotification(student: student)
     }
     
-    // TODO: Check if you could use the same session with WKWebView and Alamofire
+
+    func scheduleNotification(student: Student) {
+        let content = UNMutableNotificationContent()
+        content.title = student.name
+        content.subtitle = student.time
+        content.body = student.seat
+        content.badge = 1
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+        
+        let requestIdentifier = student.name + student.time
+        let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request) {
+            error in
+        }
+    }
+
 }
 
 struct Student {
