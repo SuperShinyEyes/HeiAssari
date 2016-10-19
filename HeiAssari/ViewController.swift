@@ -33,10 +33,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     
     private var isOnManagePage: Bool = false {
         didSet {
-            if isOnManagePage {
+            if oldValue == false && isOnManagePage {
                 label.text = Constants.isOnManagePageLabelText
-                queueChecker = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(parseManagePage), userInfo: nil, repeats: true)
-            } else {
+                queueChecker = Timer.scheduledTimer(timeInterval: 3, target: self, selector: #selector(parseManagePage), userInfo: nil, repeats: true)
+            } else if !isOnManagePage {
                 queueChecker.invalidate()
                 label.text = Constants.defaultLabelText
             }
