@@ -9,8 +9,9 @@
 import UIKit
 import AudioToolbox
 import WebKit
+import Kanna
 import Alamofire
-
+import AVFoundation
 
 struct Constants {
     static let aPlusURL = "https://plus.cs.hut.fi/a1141/2016/"
@@ -25,24 +26,80 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     var webView: WKWebView!
     var label: UILabel!
+    var audioPlayer: AVAudioPlayer!
+    var students = [Student]()
     
     private var isOnManagePage: Bool = false {
         didSet {
             if isOnManagePage {
                 label.text = "On manage"
+                parseManagePage()
             } else {
                 label.text = "Not manage"
             }
         }
     }
     
+    func parseManagePage() {
+        let url = webView.url!.absoluteString
+        print(">>> parseManagePage() @ \(url)")
+//        Alamofire.request(url).responseString { response in
+//            print("Success: \(response.result.isSuccess)")
+//            self.parseHTML(html: response.result.value!)
+//        }
+        webView.evaluateJavaScript("document.documentElement.outerHTML.toString()") {
+            (html: Any?, error: Error?) -> Void in
+            self.parseHTML(html: html as! String)
+//            print(html)
+        }
+        
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadWebView()
         loadLabel()
+        loadAVAudioSession()
+        loadAudioPlayer()
         loadURL(webView: webView, urlString: Constants.aPlusURL)
 
     }
+    
+    func loadAVAudioSession() {
+        
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.defaultToSpeaker])
+            
+            NSLog("Succeeded to set audio session category.")
+        } catch {
+            NSLog("Failed to set audio session category.  Error: \(error)")
+        }
+        
+    }
+    
+    func loadAudioPlayer() {
+//        let song = AVPlayerItem(url: Bundle.main.url(forResource: "silent", withExtension: "mp3")!)
+        guard let songURL = Bundle.main.url(forResource: "silent", withExtension: "mp3") else {
+            print("Cannot load the song url")
+            return
+        }
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: songURL)
+        } catch {
+            print("Cannot load the song: \(error)")
+        }
+        audioPlayer.numberOfLoops = -1
+        audioPlayer.play()
+//        audioPlayer = AVQueuePlayer(playerItem: song)
+//        audioPlayer.actionAtItemEnd = .none
+        
+    }
+    
+//    func playerItemDidReachEnd(notification: NSNotification) {
+//        audioPlayer.seek(to: kCMTimeZero)
+//        audioPlayer.play()
+//    }
 
     func loadWebView() {
         
@@ -112,15 +169,15 @@ class ViewController: UIViewController, WKNavigationDelegate {
             }
         }
         
-        if let url = webView.url {
-            let urlString = url.absoluteString
-            
-                
-                Alamofire.request(urlString).responseString { response in
-                    print("Success: \(response.result.isSuccess)")
-                    self.parseHTML(html: response.result.value!)
-                }
-        }
+//        if let url = webView.url {
+//            let urlString = url.absoluteString
+//            
+//                
+//                Alamofire.request(urlString).responseString { response in
+//                    print("Success: \(response.result.isSuccess)")
+//                    self.parseHTML(html: response.result.value!)
+//                }
+//        }
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -135,9 +192,31 @@ class ViewController: UIViewController, WKNavigationDelegate {
     
     func parseHTML(html: String) -> Void {
         print(html)
-//        if let doc = Kanna.HTML(html: html, encoding: NSUTF8StringEncoding) {
-//            
-//            // Search for nodes by CSS
+        
+        if let doc = Kanna.HTML(html: html, encoding: String.Encoding.utf8) {
+            for student in doc.css("table#queue tbody") {
+                let studentString = student.text!.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+                let seperatedString = studentString.components(separatedBy: "\n").map{
+                    $0.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+                }
+                print(">>> Student: \(seperatedString)")
+                if seperatedString.first! == "Sija" {
+                    continue
+                }
+                
+                let name = seperatedString[1]
+                let time = seperatedString[2]
+                if !self.isStudentAlreadyInQueue(name: name, time: time) {
+                    let seat = seperatedString[3]
+                    self.pushStudentToQueue(name: name, time: time, seat: seat)
+                } else {
+                    print(">>> Already in queue")
+                }
+                
+                
+                
+            }
+            // Search for nodes by CSS
 //            for show in doc.css("td[id^='Text']") {
 //                
 //                // Strip the string of surrounding whitespace.
@@ -152,10 +231,42 @@ class ViewController: UIViewController, WKNavigationDelegate {
 //                    print(showString + "\n")
 //                }
 //            }
-//        }
+        }
+    }
+    
+    func isStudentAlreadyInQueue(name: String, time: String) -> Bool {
+        let studentsWithSameName = students.filter { $0.name == name }
+        guard let student = studentsWithSameName.first else {
+            return false
+        }
+        return student.time == time
+    }
+    
+    func pushStudentToQueue(name: String, time:String, seat: String) {
+        print(">>> pushStudentToQueue()")
+        students.append(Student(name: name, time: time, seat: seat))
+        vibratePhone()
     }
     
     // TODO: Check if you could use the same session with WKWebView and Alamofire
+}
+
+struct Student {
+    let name: String
+    let time: String
+    let seat: String
+    var timeAsInt: Int {
+        // 14:30 => 14*60 + 30
+        let hourAndMinute: [String] = time.components(separatedBy: ":")
+        guard let hourAsString = hourAndMinute.first,
+            let minuteAsString = hourAndMinute.last,
+            let hour = Int(hourAsString),
+            let minute = Int(minuteAsString)  else {
+            print("Wrong time input: \(hourAndMinute)")
+            return -1
+        }
+        return hour * 60 + minute
+    }
 }
 
 extension ViewController {
