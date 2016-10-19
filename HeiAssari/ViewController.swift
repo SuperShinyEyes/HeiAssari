@@ -14,6 +14,9 @@ import AVFoundation
 import UserNotifications
 
 struct Constants {
+    
+    static let isDebugging = false
+    
     static let aPlusURL = "https://plus.cs.hut.fi/"
     
     static let greenGoblinURLprefix = "https://greengoblin.cs.hut.fi/neuvontajono/sessions/"
@@ -56,6 +59,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             self.parseHTML(html: html as! String)
         }
         
+        scheduleNotification(isDebugging: Constants.isDebugging)    // Debug purpose
     }
     
     override func viewDidLoad() {
@@ -222,6 +226,19 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         UNUserNotificationCenter.current().add(request) {
             error in
         }
+    }
+    
+    
+    /**
+     Only for debugging
+     */
+    var badge = 1
+    func scheduleNotification(isDebugging: Bool) {
+        guard isDebugging else { return }
+        let time = String(NSDate().timeIntervalSince1970)
+        let student = Student(name: "ss", time: time, seat: String(badge))
+        scheduleNotification(student: student, badgeNumber: badge)
+        badge += 1
     }
 
 }
