@@ -28,13 +28,16 @@ class ViewController: UIViewController, WKNavigationDelegate {
     var label: UILabel!
     var audioPlayer: AVAudioPlayer!
     var students = [Student]()
+    var queueChecker = Timer()
     
     private var isOnManagePage: Bool = false {
         didSet {
             if isOnManagePage {
                 label.text = "On manage"
-                parseManagePage()
+                queueChecker = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(parseManagePage), userInfo: nil, repeats: true)
+//                parseManagePage()
             } else {
+                queueChecker.invalidate()
                 label.text = "Not manage"
             }
         }
@@ -95,11 +98,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
 //        audioPlayer.actionAtItemEnd = .none
         
     }
-    
-//    func playerItemDidReachEnd(notification: NSNotification) {
-//        audioPlayer.seek(to: kCMTimeZero)
-//        audioPlayer.play()
-//    }
 
     func loadWebView() {
         
@@ -151,7 +149,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
 
         webView.evaluateJavaScript("document.documentElement.outerHTML") {
             (html: Any?, error: Error?) in
-//            print(html)
             if let doc = html as? String {
                 if doc.contains(Constants.aPlusLogInURLPath) {
                     print(">>> Should log in")
@@ -168,16 +165,6 @@ class ViewController: UIViewController, WKNavigationDelegate {
                 }
             }
         }
-        
-//        if let url = webView.url {
-//            let urlString = url.absoluteString
-//            
-//                
-//                Alamofire.request(urlString).responseString { response in
-//                    print("Success: \(response.result.isSuccess)")
-//                    self.parseHTML(html: response.result.value!)
-//                }
-//        }
     }
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
@@ -191,7 +178,8 @@ class ViewController: UIViewController, WKNavigationDelegate {
     }
     
     func parseHTML(html: String) -> Void {
-        print(html)
+        print(">>> @parseHTML()")
+//        print(html)
         
         if let doc = Kanna.HTML(html: html, encoding: String.Encoding.utf8) {
             for student in doc.css("table#queue tbody") {
@@ -199,47 +187,32 @@ class ViewController: UIViewController, WKNavigationDelegate {
                 let seperatedString = studentString.components(separatedBy: "\n").map{
                     $0.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
                 }
-                print(">>> Student: \(seperatedString)")
-                if seperatedString.first! == "Sija" {
-                    continue
+                guard seperatedString.count > 3 else {
+                    break
                 }
+                print(">>> Student: \(seperatedString)")
                 
                 let name = seperatedString[1]
                 let time = seperatedString[2]
-                if !self.isStudentAlreadyInQueue(name: name, time: time) {
+                if self.isNotStudentInQueue(name: name, time: time) {
                     let seat = seperatedString[3]
                     self.pushStudentToQueue(name: name, time: time, seat: seat)
                 } else {
                     print(">>> Already in queue")
                 }
                 
-                
-                
             }
-            // Search for nodes by CSS
-//            for show in doc.css("td[id^='Text']") {
-//                
-//                // Strip the string of surrounding whitespace.
-//                let showString = show.text!.stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
-//                
-//                // All text involving shows on this page currently start with the weekday.
-//                // Weekday formatting is inconsistent, but the first three letters are always there.
-//                let regex = try! NSRegularExpression(pattern: "^(mon|tue|wed|thu|fri|sat|sun)", options: [.CaseInsensitive])
-//                
-//                if regex.firstMatchInString(showString, options: [], range: NSMakeRange(0, showString.characters.count)) != nil {
-//                    shows.append(showString)
-//                    print(showString + "\n")
-//                }
-//            }
         }
     }
     
-    func isStudentAlreadyInQueue(name: String, time: String) -> Bool {
+    func isNotStudentInQueue(name: String, time: String) -> Bool {
         let studentsWithSameName = students.filter { $0.name == name }
         guard let student = studentsWithSameName.first else {
-            return false
+            return true  // Because we don't want to add it to the queue
         }
-        return student.time == time
+        return studentsWithSameName.filter { existing in
+            existing.time == time
+        }.isEmpty
     }
     
     func pushStudentToQueue(name: String, time:String, seat: String) {
