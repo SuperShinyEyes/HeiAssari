@@ -11,19 +11,35 @@ import AudioToolbox
 import WebKit
 import Alamofire
 
+
 struct Constants {
     static let aPlusURL = "https://plus.cs.hut.fi/a1141/2016/"
     static let aPlusLogInURL = "https://plus.cs.hut.fi/accounts/login/?next=/a1141/2016/"
     static let aPlusLogInURLPath = "/shibboleth/login/?next=/a1141/2016/"
+    
+    static let greenGoblinURLprefix = "https://greengoblin.cs.hut.fi/neuvontajono/sessions/"
+    static let greenGoblinURLsuffix = "/manage"
 }
 
 class ViewController: UIViewController, WKNavigationDelegate {
     
     var webView: WKWebView!
-
+    var label: UILabel!
+    
+    private var isOnManagePage: Bool = false {
+        didSet {
+            if isOnManagePage {
+                label.text = "On manage"
+            } else {
+                label.text = "Not manage"
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         loadWebView()
+        loadLabel()
         loadURL(webView: webView, urlString: Constants.aPlusURL)
 
     }
@@ -42,8 +58,25 @@ class ViewController: UIViewController, WKNavigationDelegate {
         webView.load(urlRequest)
     }
     
+    func loadLabel() {
+        let webViewHeight = webView.bounds.height
+        let frame = CGRect(
+            origin: CGPoint(x: 0, y: webViewHeight),
+            size: CGSize(
+                width: UIScreen.main.bounds.width,
+                height: UIScreen.main.bounds.height - webViewHeight))
+        label = UILabel(frame: frame)
+        label.text = "Hello"
+        label.textColor = UIColor.white
+        view.addSubview(label)
+    }
+    
+    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print(">>> finish loading")
+        
+        
+        isOnManagePage = webView.url!.absoluteString.hasPrefix(Constants.greenGoblinURLprefix) && webView.url!.absoluteString.hasSuffix(Constants.greenGoblinURLsuffix)
         
         // FIXME: Parse HTML by tags
         /**
