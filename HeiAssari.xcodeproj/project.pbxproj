@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5946400C1DB7B56A007C81B2 /* silent.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5946400B1DB7B56A007C81B2 /* silent.mp3 */; };
 		594CFF721DB523D800C5DF43 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594CFF711DB523D800C5DF43 /* AppDelegate.swift */; };
 		594CFF741DB523D800C5DF43 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 594CFF731DB523D800C5DF43 /* ViewController.swift */; };
 		594CFF771DB523D800C5DF43 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 594CFF751DB523D800C5DF43 /* Main.storyboard */; };
@@ -30,6 +31,7 @@
 /* Begin PBXFileReference section */
 		30718B525553E1253B3943FC /* Pods-HeiAssari.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HeiAssari.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HeiAssari/Pods-HeiAssari.debug.xcconfig"; sourceTree = "<group>"; };
 		37AC057C7D3C753FF5ABE225 /* Pods_HeiAssariTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_HeiAssariTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5946400B1DB7B56A007C81B2 /* silent.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silent.mp3; sourceTree = "<group>"; };
 		594CFF6E1DB523D800C5DF43 /* HeiAssari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeiAssari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		594CFF711DB523D800C5DF43 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		594CFF731DB523D800C5DF43 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 		594CFF911DB523ED00C5DF43 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5946400B1DB7B56A007C81B2 /* silent.mp3 */,
 				594CFF751DB523D800C5DF43 /* Main.storyboard */,
 				594CFF781DB523D800C5DF43 /* Assets.xcassets */,
 				594CFF7A1DB523D800C5DF43 /* LaunchScreen.storyboard */,
@@ -194,6 +197,11 @@
 						CreatedOnToolsVersion = 8.0;
 						DevelopmentTeam = ES4B789T7A;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					594CFF811DB523D800C5DF43 = {
 						CreatedOnToolsVersion = 8.0;
@@ -227,6 +235,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5946400C1DB7B56A007C81B2 /* silent.mp3 in Resources */,
 				594CFF7C1DB523D800C5DF43 /* LaunchScreen.storyboard in Resources */,
 				594CFF791DB523D800C5DF43 /* Assets.xcassets in Resources */,
 				594CFF771DB523D800C5DF43 /* Main.storyboard in Resources */,
