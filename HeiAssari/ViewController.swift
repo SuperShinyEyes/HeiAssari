@@ -10,17 +10,17 @@ import UIKit
 import AudioToolbox
 import WebKit
 import Kanna
-import Alamofire
 import AVFoundation
 import UserNotifications
 
 struct Constants {
     static let aPlusURL = "https://plus.cs.hut.fi/a1141/2016/"
-    static let aPlusLogInURL = "https://plus.cs.hut.fi/accounts/login/?next=/a1141/2016/"
-    static let aPlusLogInURLPath = "/shibboleth/login/?next=/a1141/2016/"
     
     static let greenGoblinURLprefix = "https://greengoblin.cs.hut.fi/neuvontajono/sessions/"
     static let greenGoblinURLsuffix = "/manage"
+    
+    static let defaultLabelText = "☝🏼Instruction \n🖱Click: \n1.Menu \n2.Neuvontajono \n3.Jonon hallinta \n4.YOUR GROUP"
+    static let isOnManagePageLabelText = "Now we will notify you when a student joins the queue. You may press home button or lock your iPhone. \n\nYour iPhone might get warm because it's playing silent mp3 so it doesn't get suspended by the OS."
 }
 
 class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -34,12 +34,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     private var isOnManagePage: Bool = false {
         didSet {
             if isOnManagePage {
-                label.text = "On manage"
+                label.text = Constants.isOnManagePageLabelText
                 queueChecker = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(parseManagePage), userInfo: nil, repeats: true)
-//                parseManagePage()
             } else {
                 queueChecker.invalidate()
-                label.text = "Not manage"
+                label.text = Constants.defaultLabelText
             }
         }
     }
@@ -48,14 +47,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         webView.reload()
         let url = webView.url!.absoluteString
         print(">>> parseManagePage() @ \(url)")
-//        Alamofire.request(url).responseString { response in
-//            print("Success: \(response.result.isSuccess)")
-//            self.parseHTML(html: response.result.value!)
-//        }
         webView.evaluateJavaScript("document.documentElement.outerHTML.toString()") {
             (html: Any?, error: Error?) -> Void in
             self.parseHTML(html: html as! String)
-//            print(html)
         }
         
         
@@ -75,7 +69,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.defaultToSpeaker])
-            
             NSLog("Succeeded to set audio session category.")
         } catch {
             NSLog("Failed to set audio session category.  Error: \(error)")
@@ -84,7 +77,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     }
     
     func loadAudioPlayer() {
-//        let song = AVPlayerItem(url: Bundle.main.url(forResource: "silent", withExtension: "mp3")!)
         guard let songURL = Bundle.main.url(forResource: "silent", withExtension: "mp3") else {
             print("Cannot load the song url")
             return
@@ -96,14 +88,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         }
         audioPlayer.numberOfLoops = -1
         audioPlayer.play()
-//        audioPlayer = AVQueuePlayer(playerItem: song)
-//        audioPlayer.actionAtItemEnd = .none
-        
     }
 
     func loadWebView() {
         
-        let frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.8))
+        let frame = CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.7))
         webView = WKWebView(frame: frame)
         webView.navigationDelegate = self
         webView.uiDelegate = self
@@ -124,7 +113,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 width: UIScreen.main.bounds.width,
                 height: UIScreen.main.bounds.height - webViewHeight))
         label = UILabel(frame: frame)
-        label.text = "Hello"
+        label.numberOfLines = 0
+        label.text = Constants.defaultLabelText
         label.textColor = UIColor.white
         view.addSubview(label)
     }
@@ -133,24 +123,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print(">>> finish loading")
         
-        
         let isURLPrefixManagePagePrefix = webView.url!.absoluteString.hasPrefix(Constants.greenGoblinURLprefix)
         let isURLSuffixManagePagePrefix = webView.url!.absoluteString.hasSuffix(Constants.greenGoblinURLsuffix)
         isOnManagePage = isURLPrefixManagePagePrefix && isURLSuffixManagePagePrefix
-        
-        // FIXME: Parse HTML by tags
-        /**
-         # Parsing HTML
-         
-         For some reason I couldn't parse html using JS such as
-         
-         webView.stringByEvaluatingJavaScript(from: "document.links")
-         webView.stringByEvaluatingJavaScript(from: "document.documentElement.getElementsByTagName('a')")
-         
-         Those would return Optional()
-         
-         */
-
+        let time = String(NSDate().timeIntervalSince1970)
+        scheduleNotification(student: Student(name: "ss", time: time, seat: "ss"), badgeNumber: 10)
     }
     
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
@@ -176,9 +153,15 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     
     func parseHTML(html: String) -> Void {
         print(">>> @parseHTML()")
-//        print(html)
         
         if let doc = Kanna.HTML(html: html, encoding: String.Encoding.utf8) {
+            var queueLength = 0
+            /**
+             I'm not sure what doc.css("table#queue tbody tr").underestimatedCount is.
+             So I count in a for-loop instead.
+             */
+            doc.css("table#queue tbody tr").forEach{ _ in queueLength += 1}
+            
             for student in doc.css("table#queue tbody tr") {
                 let studentString = student.text!.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
                 let seperatedString = studentString.components(separatedBy: "\n").map{
@@ -193,7 +176,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 let time = seperatedString[2]
                 if self.isNotStudentInQueue(name: name, time: time) {
                     let seat = seperatedString[3]
-                    self.pushStudentToQueue(name: name, time: time, seat: seat)
+                    self.pushStudentToQueue(name: name, time: time, seat: seat, queueLength: queueLength)
                 } else {
                     print(">>> Already in queue")
                 }
@@ -207,31 +190,29 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         guard let _ = studentsWithSameName.first else {
             return true  // Because we don't want to add it to the queue
         }
-        return studentsWithSameName.filter { existing in
-            existing.time == time
-        }.isEmpty
+        return studentsWithSameName.filter { $0.time == time }.isEmpty
     }
     
-    func pushStudentToQueue(name: String, time:String, seat: String) {
+    func pushStudentToQueue(name: String, time:String, seat: String, queueLength badgeNumber: Int) {
         print(">>> pushStudentToQueue()")
         let student = Student(name: name, time: time, seat: seat)
         students.append(student)
         vibratePhone()
-        scheduleNotification(student: student)
+        scheduleNotification(student: student, badgeNumber: badgeNumber)
     }
     
 
-    func scheduleNotification(student: Student) {
+    func scheduleNotification(student: Student, badgeNumber badge: Int) {
         let content = UNMutableNotificationContent()
         content.title = student.name
         content.subtitle = student.time
         content.body = student.seat
-        content.badge = 1
+        content.badge = badge as NSNumber
         
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         
         let requestIdentifier = student.name + student.time
-        let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request) {
             error in
         }
