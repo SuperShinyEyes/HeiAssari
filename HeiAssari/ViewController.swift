@@ -14,13 +14,13 @@ import AVFoundation
 import UserNotifications
 
 struct Constants {
-    static let aPlusURL = "https://plus.cs.hut.fi/a1141/2016/"
+    static let aPlusURL = "https://plus.cs.hut.fi/"
     
     static let greenGoblinURLprefix = "https://greengoblin.cs.hut.fi/neuvontajono/sessions/"
     static let greenGoblinURLsuffix = "/manage"
     
-    static let defaultLabelText = "☝🏼Instruction \n🖱Click: \n1.Menu \n2.Neuvontajono \n3.Jonon hallinta \n4.YOUR GROUP"
-    static let isOnManagePageLabelText = "Now we will notify you when a student joins the queue. You may press home button or lock your iPhone. \n\nYour iPhone might get warm because it's playing silent mp3 so it doesn't get suspended by the OS."
+    static let defaultLabelText = "☝🏼Instruction \nGo to your course. \n🖱Click: \n1.Menu \n2.Neuvontajono \n3.Jonon hallinta \n4.YOUR GROUP"
+    static let isOnManagePageLabelText = "Now we will notify you when a student joins the queue. You may press home button or lock your iPhone. \n\nYour iPhone might get little warm because it's playing silent mp3 so it doesn't get suspended by the OS."
 }
 
 class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
@@ -216,9 +216,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         content.body = student.seat
         content.badge = badge as NSNumber
         
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        
         let requestIdentifier = student.name + student.time
+        // trigger: nil => Immediate notification
         let request = UNNotificationRequest(identifier: requestIdentifier, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(request) {
             error in
