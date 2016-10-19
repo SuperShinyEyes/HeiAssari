@@ -44,14 +44,17 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     }
     
     func parseManagePage() {
+        // WKWebView cannot get AJAX updates when the app enters background
+        // Reload is an easy workaround
         webView.reload()
+        
         let url = webView.url!.absoluteString
         print(">>> parseManagePage() @ \(url)")
+        
         webView.evaluateJavaScript("document.documentElement.outerHTML.toString()") {
             (html: Any?, error: Error?) -> Void in
             self.parseHTML(html: html as! String)
         }
-        
         
     }
     
@@ -86,7 +89,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         } catch {
             print("Cannot load the song: \(error)")
         }
-        audioPlayer.numberOfLoops = -1
+        audioPlayer.numberOfLoops = -1    // Infinite loop
         audioPlayer.play()
     }
 
@@ -126,10 +129,14 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         let isURLPrefixManagePagePrefix = webView.url!.absoluteString.hasPrefix(Constants.greenGoblinURLprefix)
         let isURLSuffixManagePagePrefix = webView.url!.absoluteString.hasSuffix(Constants.greenGoblinURLsuffix)
         isOnManagePage = isURLPrefixManagePagePrefix && isURLSuffixManagePagePrefix
-        let time = String(NSDate().timeIntervalSince1970)
-        scheduleNotification(student: Student(name: "ss", time: time, seat: "ss"), badgeNumber: 10)
+        
     }
     
+    
+    /**
+     This method is a delegate method of WKUIDelegate. It's for opening Neuvontajono link
+     Without this, you can't open a link which is supposed to be opened in a new tab/window.
+     */
     func webView(_ webView: WKWebView, createWebViewWith configuration: WKWebViewConfiguration, for navigationAction: WKNavigationAction, windowFeatures: WKWindowFeatures) -> WKWebView? {
         
         print(">>> createWebViewWith configuration")
@@ -141,47 +148,47 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         return nil
     }
     
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         decisionHandler(WKNavigationActionPolicy.allow)
     }
     
-    func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
-        print(">>> didReceiveServerRedirectForProvisionalNavigation: @ \(webView.url!)")
-//        let urlRequest = URLRequest(url: webView.url!)
-//        webView.load(urlRequest)
-    }
     
     func parseHTML(html: String) -> Void {
         print(">>> @parseHTML()")
         
         if let doc = Kanna.HTML(html: html, encoding: String.Encoding.utf8) {
-            var queueLength = 0
+            
             /**
              I'm not sure what doc.css("table#queue tbody tr").underestimatedCount is.
              So I count in a for-loop instead.
              */
-            doc.css("table#queue tbody tr").forEach{ _ in queueLength += 1}
+            var queueLength = 1
             
-            for student in doc.css("table#queue tbody tr") {
-                let studentString = student.text!.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
-                let seperatedString = studentString.components(separatedBy: "\n").map{
+            for row in doc.css("table#queue tbody tr") {
+                let rowTrimmed = row.text!.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+                let rowSeparated = rowTrimmed.components(separatedBy: "\n").map{
                     $0.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
                 }
-                guard seperatedString.count > 3 else {
+                
+                guard rowSeparated.count > 3 else {
                     break
                 }
-                print(">>> Student: \(seperatedString)")
                 
-                let name = seperatedString[1]
-                let time = seperatedString[2]
-                if self.isNotStudentInQueue(name: name, time: time) {
-                    let seat = seperatedString[3]
-                    self.pushStudentToQueue(name: name, time: time, seat: seat, queueLength: queueLength)
-                } else {
-                    print(">>> Already in queue")
-                }
-                
+                self.parseRow(row: rowSeparated, queueLength: queueLength)
+                queueLength += 1
             }
+        }
+    }
+    
+    func parseRow(row: [String], queueLength: Int){
+        let name = row[1]
+        let time = row[2]
+        if self.isNotStudentInQueue(name: name, time: time) {
+            let seat = row[3]
+            self.pushStudentToQueue(name: name, time: time, seat: seat, queueLength: queueLength)
+        } else {
+            print(">>> Already in queue")
         }
     }
     
