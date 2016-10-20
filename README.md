@@ -1,6 +1,8 @@
 # HeiAssari
 Hacky A+ notification app for Aalto TAs
 
+![Demo](README_images/demo.gif)
+
 ## Introduction
 
 ### What is it?
