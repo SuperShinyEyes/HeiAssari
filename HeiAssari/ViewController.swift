@@ -65,12 +65,41 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        loadNavBarButtons()
         loadWebView()
         loadLabel()
         loadAVAudioSession()
         loadAudioPlayer()
-        loadURL(webView: webView, urlString: Constants.aPlusURL)
-
+        webView.goHome()
+    }
+    
+    func loadNavBarButtons() {
+        navigationItem.title = "HeiAssari"
+        
+        
+        let backackButton:UIButton = UIButton(type: UIButtonType.custom) as UIButton
+        backackButton.addTarget(webView, action: #selector(webView.goBack), for: .touchUpInside)
+        backackButton.setTitle("< Back", for: .normal)
+        
+        backackButton.setTitleColor(UIColor.blue, for: .normal)
+        backackButton.sizeToFit()
+        let backButtonItem:UIBarButtonItem = UIBarButtonItem(customView: backackButton)
+        
+//        let back = UIBarButtonItem(barButtonSystemItem: .undo, target: self, action: #selector(webView.goBack))
+        navigationItem.leftBarButtonItem = backButtonItem
+        
+        
+        let homeButton:UIButton = UIButton(type: UIButtonType.custom) as UIButton
+//        let image = UIImage(named: "home (5)")
+//        homeButton.setImage(image, for: .normal)
+        homeButton.addTarget(webView, action: #selector(webView.goHome), for: .touchUpInside)
+        homeButton.setTitle("A+", for: .normal)
+        
+        homeButton.setTitleColor(UIColor.blue, for: .normal)
+        homeButton.sizeToFit()
+        let homeButtonItem:UIBarButtonItem = UIBarButtonItem(customView: homeButton)
+        navigationItem.rightBarButtonItem = homeButtonItem
     }
     
     func loadAVAudioSession() {
@@ -330,5 +359,17 @@ extension ViewController {
     fileprivate func vibratePhone() {
         print(">>> vibratePhone()")
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+    }
+}
+
+extension WKWebView {
+    func load(urlAsString: String) {
+        guard let url = URL(string: urlAsString) else { print("Invalid URL: \(urlAsString)"); return }
+        let urlRequest = URLRequest(url: url)
+        load(urlRequest)
+    }
+    
+    func goHome() {
+        load(urlAsString: Constants.aPlusURL)
     }
 }
