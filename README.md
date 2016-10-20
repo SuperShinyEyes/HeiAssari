@@ -1,5 +1,4 @@
 # HeiAssari
-![Icon](README_images/icon.png)
 Hacky A+ notification app for Aalto TAs
 
 ## Introduction
