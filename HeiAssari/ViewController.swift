@@ -84,26 +84,22 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         
         backackButton.setTitleColor(UIColor.blue, for: .normal)
         backackButton.sizeToFit()
-        let backButtonItem:UIBarButtonItem = UIBarButtonItem(customView: backackButton)
+        let backButtonItem = UIBarButtonItem(customView: backackButton)
         
-//        let back = UIBarButtonItem(barButtonSystemItem: .undo, target: self, action: #selector(webView.goBack))
         navigationItem.leftBarButtonItem = backButtonItem
         
         
         let homeButton:UIButton = UIButton(type: UIButtonType.custom) as UIButton
-//        let image = UIImage(named: "home (5)")
-//        homeButton.setImage(image, for: .normal)
         homeButton.addTarget(webView, action: #selector(webView.goHome), for: .touchUpInside)
         homeButton.setTitle("A+", for: .normal)
-        
         homeButton.setTitleColor(UIColor.blue, for: .normal)
         homeButton.sizeToFit()
-        let homeButtonItem:UIBarButtonItem = UIBarButtonItem(customView: homeButton)
+        let homeButtonItem = UIBarButtonItem(customView: homeButton)
+
         navigationItem.rightBarButtonItem = homeButtonItem
     }
     
     func loadAVAudioSession() {
-        
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: [.defaultToSpeaker])
             NSLog("Succeeded to set audio session category.")
@@ -136,12 +132,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         view.addSubview(webView)
     }
     
-    func loadURL(webView: WKWebView, urlString: String) {
-        let url = URL(string: urlString)
-        let urlRequest = URLRequest(url: url!)
-        webView.load(urlRequest)
-    }
-    
     func loadLabel() {
         let webViewHeight = webView.bounds.height
         let frame = CGRect(
@@ -156,14 +146,12 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         view.addSubview(label)
     }
     
-    
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print(">>> finish loading")
         
         let isURLPrefixManagePagePrefix = webView.url!.absoluteString.hasPrefix(Constants.greenGoblinURLprefix)
         let isURLSuffixManagePagePrefix = webView.url!.absoluteString.hasSuffix(Constants.greenGoblinURLsuffix)
         isOnManagePage = isURLPrefixManagePagePrefix && isURLSuffixManagePagePrefix
-        
     }
     
     
@@ -206,8 +194,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             }
         }
         
-        print(oldHTMLTable)
-        print(newHTMLTable)
+        //        print(oldHTMLTable)
+        //        print(newHTMLTable)
         
         let result = oldHTMLTable != newHTMLTable
         oldHTMLTable = newHTMLTable
@@ -229,6 +217,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             let table = doc.css("table#queue tbody tr")
             var newTableHTML = ""
             
+            /// For some reason reduce didn't work
             table.forEach { p in
                 if let text = p.text {
                     newTableHTML += text
@@ -243,10 +232,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
             //                return base
             //            }
             
-            
-            
-            
-            
             var queueLength = 0
             
             for row in doc.css("table#queue tbody tr") {
@@ -258,26 +243,13 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                     $0.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
                 }
                 
-                guard rowSeparated.count > 3 else {
-                    break
-                }
+                if rowSeparated.count < 4 { break }
                 
                 self.parseRow(row: rowSeparated, queueLength: queueLength)
-                
             }
-            
             UIApplication.shared.applicationIconBadgeNumber = queueLength
         }
     }
-    
-//    func isTableContentNew(old: inout String, new: String) -> Bool {
-//        print(old)
-//        print(new)
-//        let result = old != new
-//        old = new
-//        return result
-//    }
-    
     
     func parseRow(row: [String], queueLength: Int){
         let name = row[1]
