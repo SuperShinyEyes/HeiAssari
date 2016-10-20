@@ -33,6 +33,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
     var audioPlayer: AVAudioPlayer!
     var students = [Student]()
     var queueChecker = Timer()
+    var oldHTMLTable: String = ""
     
     private var isOnManagePage: Bool = false {
         didSet {
@@ -157,9 +158,37 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         decisionHandler(WKNavigationActionPolicy.allow)
     }
     
+    func isTableContentNew(oldHTMLTable: inout String, newHTML: String) -> Bool {
+        guard let doc = Kanna.HTML(html: newHTML, encoding: String.Encoding.utf8) else {
+            return false
+        }
+        
+        /**
+         I'm not sure what doc.css("table#queue tbody tr").underestimatedCount is.
+         So I count in a for-loop instead.
+         */
+        
+        let tableAsXPath = doc.css("table#queue tbody tr")
+        var newHTMLTable = ""
+        
+        tableAsXPath.forEach { p in
+            if let text = p.text {
+                newHTMLTable += text
+            }
+        }
+        
+        print(oldHTMLTable)
+        print(newHTMLTable)
+        
+        let result = oldHTMLTable != newHTMLTable
+        oldHTMLTable = newHTMLTable
+        return result
+        
+    }
     
     func parseHTML(html: String) -> Void {
         print(">>> @parseHTML()")
+        guard isTableContentNew(oldHTMLTable: &oldHTMLTable, newHTML: html) else { print("    Nothing new"); return }
         
         if let doc = Kanna.HTML(html: html, encoding: String.Encoding.utf8) {
             
@@ -167,9 +196,34 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
              I'm not sure what doc.css("table#queue tbody tr").underestimatedCount is.
              So I count in a for-loop instead.
              */
-            var queueLength = 1
+            
+            let table = doc.css("table#queue tbody tr")
+            var newTableHTML = ""
+            
+            table.forEach { p in
+                if let text = p.text {
+                    newTableHTML += text
+                }
+            }
+            
+            //            table.reduce("") { p in
+            //                let base = p.0
+            //                if let text = p.1.text {
+            //                    return base + text
+            //                }
+            //                return base
+            //            }
+            
+            
+            
+            
+            
+            var queueLength = 0
             
             for row in doc.css("table#queue tbody tr") {
+                
+                queueLength += 1
+                
                 let rowTrimmed = row.text!.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
                 let rowSeparated = rowTrimmed.components(separatedBy: "\n").map{
                     $0.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
@@ -180,10 +234,21 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
                 }
                 
                 self.parseRow(row: rowSeparated, queueLength: queueLength)
-                queueLength += 1
+                
             }
+            
+            UIApplication.shared.applicationIconBadgeNumber = queueLength
         }
     }
+    
+//    func isTableContentNew(old: inout String, new: String) -> Bool {
+//        print(old)
+//        print(new)
+//        let result = old != new
+//        old = new
+//        return result
+//    }
+    
     
     func parseRow(row: [String], queueLength: Int){
         let name = row[1]
