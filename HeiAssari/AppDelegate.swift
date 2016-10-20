@@ -20,14 +20,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()
         
+        
+        requestNotificationAuthorization()
+        
+        return true
+    }
+    
+    func requestNotificationAuthorization() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) {
             granted, error in
             
             if granted {
             }
         }
-        
-        return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
