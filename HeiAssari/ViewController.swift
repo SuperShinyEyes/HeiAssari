@@ -80,7 +80,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate {
         
         let backackButton:UIButton = UIButton(type: UIButtonType.custom) as UIButton
         backackButton.addTarget(webView, action: #selector(webView.goBack), for: .touchUpInside)
-        backackButton.setTitle("< Back", for: .normal)
+        let image = UIImage(named: "back")
+        backackButton.setImage(image, for: .normal)
+//        backackButton.setTitle("< Back", for: .normal)
         
         backackButton.setTitleColor(UIColor.blue, for: .normal)
         backackButton.sizeToFit()
